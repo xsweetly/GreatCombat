@@ -1,0 +1,196 @@
+# docs - https://encourager.gitbook.io/greatplugins
+# Plugin permissions:
+# greatcombat.teleports.bypass - teleports bypass permission
+# greatcombat.powerups.bypass - powerups disable bypass permission
+# greatcombat.commands.bypass - commands send bypass permission
+# greatcombat.cooldowns.bypass - items cooldowns bypass permission
+# greatcombat.kill.bypass - kill on quit and kick bypass permission
+# LEGACY - &#RRGGBB
+# MINIMESSAGE - <color>
+colorizer: LEGACY
+#Send anonymous statistic
+metrics: true
+#Notify updates of plugin in console
+update-checker: true
+#Will placeholders be filled in scoreboards and messages
+#In messages, placeholders are filled in for the player who receives them
+use-papi: false
+api:
+  # IF YOU ARE NOT A DEVELOPER - SKIP THIS SETTING
+  custom-checkers-ids: []
+expansion:
+  error: 'N/A'
+  true: '&aYes'
+  false: '&cNo'
+  delimiter: '; '
+# Time displaying
+time:
+  seconds:
+    form1: 'second'
+    form3: 'seconds'
+    form5: 'seconds'
+  minutes:
+    form1: 'minute'
+    form3: 'minutes'
+    form5: 'minutes'
+  hours:
+    form1: 'hour'
+    form3: 'hours'
+    form5: 'hours'
+allow-elytra-gliding: false
+# Which plugin must manage powerups
+# Available: Essentials, CMI, Vanilla (def)
+server-manager: Vanilla
+# Available TAB и FastBoard
+# FastBoard don't require other plugins
+scoreboard-manager: FastBoard
+# Combat duration in seconds
+pvp-time: 30
+# This function is responsible for continuing combat in a region if both players are in combat
+# Supports WorldGuard and Towny (if you want to disable - put anything here)
+region-manager: none
+# List of worlds where PvP continuation in regions will work
+region-worlds:
+  - rtp
+  - world1
+# Player tick delay (How often will scoreboard and bossbar update)
+# Small value may produse a lags if you have plugins that handle tickevent
+tick-interval: 20
+# If remaining time is smaller that this value combat is stop (in ms)
+# Change if you have a problems with negative bossbar progress
+time-to-stop: 1
+# Projectiles that couldn't start combat
+ignored-projectile:
+  - EGG
+  - SNOWBALL
+# You can automatically translate item names from the "items-cooldowns" and "preventable-items" sections
+# To do this, leave the translation: '' field empty or remove it
+# If the translation field is not empty, the value from it will be used
+# To make this work, you need to install the plugin from here - https://github.com/BoomEaro/LangHelper/releases
+# This does not burden your server at all (translation is performed once when the plugin is enabled)
+use-lang-helper: false
+# The language that will be used
+helper-lang: "EN_US"
+# Should LangHelper be disabled after all items have been successfully translated?
+disable-lang: false
+# Available handlers:
+# CONSUME - while you eat item
+# RIGHT_CLICK_AIR - right click air
+# RIGHT_CLICK_BLOCK - right click block
+# LEFT_CLICK_AIR - left click air
+# LEFT_CLICK_BLOCK - right click block
+# BLOCK_BREAK - while you break block
+# RESURRECT_MAINHAND - while player resurrect with item in main hand
+# RESURRECT_OFFHAND - while player resurrect with item in off hand
+items-cooldowns:
+  # Can be random
+  CHORUS_FRUIT:
+    translation: 'Chorus Fruit'
+    handlers:
+      - CONSUME
+    checked-meta:
+      - MATERIAL
+      - DISPLAY_NAME
+      - LORE
+    # 2 get item in base64 use /combat copy
+    base64: 'H4sIAAAAAAAA/+NiYGBm4HZJLEkMSy0qzszPY2DgkuJgYMpMYRDLzcxLTS5KTCuxSs7ILyotjk8rKs0sYWRgdc4vzQPSAGpDd/c8AAAA'
+    time: 20
+    set-material-cooldown: true
+    linked-items:
+      - GOLDEN_APPLE
+  GOLDEN_APPLE:
+    translation: 'Golden Apple'
+    handlers:
+      - CONSUME
+    checked-meta:
+      - MATERIAL
+      - DISPLAY_NAME
+      - LORE
+    base64: 'H4sIAAAAAAAA/+NiYGBm4HZJLEkMSy0qzszPY2DgkuJgYMpMYRDLzcxLTS5KTCuxSs/PSUnNi08sKMhJZWRgdc4vzSthZAAAKVnRWDwAAAA='
+    time: 30
+    set-material-cooldown: true
+    linked-items:
+      - CHORUS_FRUIT
+#Items interact with that will be blocked in combat
+#handlers is similar with cooldowns
+#prevention item types:
+#INTERACTED_ITEM - item in hand
+#INTERACTED_BLOCK - block that was interacted
+# If RESURRECT player will die
+preventable-items:
+  DIAMOND_ORE:
+    translation: 'Region'
+    handlers:
+      - RIGHT_CLICK_BLOCK
+      - RIGHT_CLICK_AIR
+    checked-meta:
+      - MATERIAL
+      - DISPLAY_NAME
+      - LORE
+    types:
+      - INTERACTED_ITEM
+    base64: 'H4sIAAAAAAAA/+NiYGBm4HZJLEkMSy0qzszPY2DgkuJgYMpMYRDNzcxLTS5KTCuxSslMzM3PS4nPL0plZGB1zi/NK2FkAADqMtJCOwAAAA=='
+    set-material-cooldown: true
+# Teleportation cause that will be allowed
+# List -https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/PlayerTeleportEvent.TeleportCause.html
+# If [] all teleportations will be blocked
+allowed-teleportations-cause:
+  - CHORUS_FRUIT
+  - ENDER_PEARL
+# Worlds where combat couldn't start
+ignored-worlds: []
+# Combat couldn't start if player has this powerups
+# Available powerups
+# GAMEMODE - any gamemode except survival
+# VANISH - enabled vanish
+# FLY - enabled fly
+# GOD - enabled god
+# WALKSPEED - increased walking speed
+prevent-start-if-damager:
+  - GAMEMODE
+  - VANISH
+# Combat couldn't start if target player has this powerups
+prevent-start-if-target:
+  - GAMEMODE
+  - VANISH
+  - GOD
+# Wich powerups will be disabled for damager
+disable-for-damager:
+  - GOD
+  - GAMEMODE
+  - FLY
+  - VANISH
+# Wich powerups will be disabled for target
+disable-for-target:
+  - WALKSPEED
+  - FLY
+# Should plugin kill a player if he quit server during combat
+kill-on-leave: true
+# Should plugin kill a player if he was kicked during combat
+kill-on-kick: true
+# List of reasons will be player killed
+# If its empty player always will be killed
+kick-messages: []
+commands:
+  # If the type is WHITELIST, all the commands from the list will be available to the player
+  # If the BLACKLIST type is used, all commands except those in the list will be available to the player.
+  type: WHITELIST
+  # Should plugin change the tabcomplete to the available commands?
+  change-tabcomplete: true
+  #If empty all commands will be available
+  commands:
+    - tell: [ ]
+    - msg: [ ]
+    - check: [ confess, chat ]
+  # Settings for blocking commands targeting other players
+  # Only the beginning is checked, you need to write all command arguments up to the player's nickname
+  # For example, if you want to block the command /fix all {player} - write /fix all
+  # If empty - commands will not be filtered
+  player-commands:
+    - /heal
+    - /fix
+    - /fix all
+    - /tpa
+    - /feed
+# Don't change it !!!
+config-version: 6

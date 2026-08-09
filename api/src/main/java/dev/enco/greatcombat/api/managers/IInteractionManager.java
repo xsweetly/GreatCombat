@@ -1,0 +1,85 @@
+package dev.enco.greatcombat.api.managers;
+
+import dev.enco.greatcombat.api.models.InteractionHandler;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+/**
+ * This manager handles dynamic Bukkit event registration and maps them
+ * to cooldown and prevention rules defined via {@link InteractionHandler}.
+ */
+public interface IInteractionManager extends IManager {
+    /**
+     * Registers a mapping between a Bukkit event class and an interaction handler.
+     * <p>
+     * If this is the first handler registered for the given event class,
+     * the manager will automatically subscribe to this event in Bukkit.
+     *
+     * @param eventClass The Bukkit event class (e.g., PlayerInteractEvent.class).
+     * @param handler    The handler instance containing filtering and data extraction logic.
+     * @param <T>        The event type extending {@link Event}.
+     */
+    <T extends Event> void registerMapping(@NotNull Class<T> eventClass,
+                                           @NotNull InteractionHandler<T> handler);
+
+    /**
+     * Creates a new instance of an interaction handler.
+     *
+     * @param name      Unique name of the handler (used in configs, e.g., "RIGHT_CLICK_AIR").
+     * @param predicate Condition under which the handler is considered active for the event.
+     * @param playerExt Function to extract the {@link Player} from the event object.
+     * @param itemExt   Function to extract the {@link ItemStack} from the event object.
+     * @param <T>       The event type.
+     * @return          A new {@link InteractionHandler} instance.
+     */
+    <T extends Event> InteractionHandler<T> newHandler(@NotNull String name,
+                                                       @NotNull Predicate<T> predicate,
+                                                       @NotNull Function<T, @NotNull Player> playerExt,
+                                                       @NotNull Function<T, @Nullable ItemStack> itemExt);
+
+    /**
+     * Returns a stream of all registered handlers for a specific event type.
+     *
+     * @param event The event object.
+     * @param <T>   The event type.
+     * @return      A Stream of handlers mapped to the class of the provided event.
+     */
+    <T extends Event> @NotNull Stream<InteractionHandler<T>> getHandlers(@NotNull T event);
+
+    /**
+     * Returns the first handler where the condition ({@link InteractionHandler#predicate()}) is met.
+     * <p>
+     * Used to determine which specific action occurred (e.g., Right Click vs Left Click)
+     * within a single base Bukkit event.
+     *
+     * @param event The event object.
+     * @param <T>   The event type.
+     * @return      A Stream of active handlers for the current event state.
+     */
+    <T extends Event> @Nullable InteractionHandler<T> getFirstPredicatedHandler(@NotNull T event);
+
+    /**
+     * Executes a specific action (consumer) for all active handlers of the event.
+     *
+     * @param event    The event object.
+     * @param consumer The action to perform on the event.
+     * @param <T>      The event type.
+     */
+    <T extends Event> void handle(@NotNull T event,
+                                  @NotNull Consumer<T> consumer);
+
+    /**
+     * Registers the default interactions provided by the core.
+     * <p>
+     * This should be called during manager initialization to initialize base rules
+     */
+    void registerDefaults();
+}

@@ -1,0 +1,14 @@
+enable: true
+title: '&cCombat'
+lines:
+  - ''
+  - '&fWait &c{time}'
+  - '&fBefore leave the server'
+  - ''
+  - '&cOpponents:'
+  - '{opponents}'
+  - ''
+opponent: '&f{0} &c{1}❤ &9{2}⇄'
+empty: '&7Empty'
+# Don't change it !!!
+config-version: 2

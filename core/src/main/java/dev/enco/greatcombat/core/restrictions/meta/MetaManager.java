@@ -1,0 +1,54 @@
+package dev.enco.greatcombat.core.restrictions.meta;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import dev.enco.greatcombat.api.managers.IMetaManager;
+import dev.enco.greatcombat.api.models.IWrappedItem;
+import dev.enco.greatcombat.api.models.MetaChecker;
+import dev.enco.greatcombat.core.config.ConfigManager;
+import dev.enco.greatcombat.core.restrictions.CheckerHandle;
+import dev.enco.greatcombat.core.restrictions.DefaultCheckers;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Singleton
+public class MetaManager implements IMetaManager {
+    private final Map<String, CheckerHandle> registry = new HashMap<>();
+
+    @Inject
+    public MetaManager(ConfigManager configManager) {
+        registerDefaults(configManager);
+    }
+
+    private void registerDefaults(ConfigManager configManager) {
+        for (var meta : DefaultCheckers.values())
+            registerChecker(meta.name(), meta);
+
+        for (var name : configManager.getCheckers())
+            registerChecker(name, null);
+    }
+
+    @Override
+    public void registerChecker(@NotNull String name, @NotNull MetaChecker checker) {
+        getByID(name).bind(checker);
+    }
+
+    @Override
+    public CheckerHandle getByID(@NotNull String name) {
+        return registry.computeIfAbsent(name.toUpperCase(), CheckerHandle::new);
+    }
+
+    @Override
+    public boolean isSimilar(@NotNull IWrappedItem f, @NotNull IWrappedItem s, MetaChecker[] checkedMetas) {
+        for (MetaChecker checker : checkedMetas) {
+            if (checker.requiresMeta()) {
+                if (f.hasMeta() != s.hasMeta()) return false;
+                if (!f.hasMeta()) continue;
+            }
+            if (!checker.matches(f, s)) return false;
+        }
+        return true;
+    }
+}

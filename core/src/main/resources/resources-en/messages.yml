@@ -1,0 +1,52 @@
+# Available actions:
+# [MESSAGE] message - send message to player
+# [ACTIONBAR] message - send actionbar message to player
+# [SOUND] sound;volume;pitch - play sound for player
+# [TITLE] title;subtitle;fadein;stayin;fadeout - send a title message
+# [BROADCASTMESSAGE] / [BROADCASTACTIONBAR] / [BROADCASTSOUND] / [BROADCASTTITLE] send action to all players
+# [PLAYER] message - chat message by player, for command use /command
+# [CONSOLE] command - command from console sender
+bossbar:
+  enable: true
+  #Bossbar style
+  style: SOLID
+  #Bossbar color
+  color: RED
+  #Bossbar title
+  title: '&cCombat &7| &fWait: &6{time}'
+  #Will the bossbar occupancy scale decrease along with the time until the end of combat
+  progress: true
+actions:
+  #Actions performed for the attacking player at the start of combat
+  on-start-damager:
+    - '[MESSAGE] You start combat with &c{0}'
+  #Actions performed for the attacked player at the beginning of combat
+  on-start-target:
+    - '[MESSAGE] Player &c{0} &fstart combat with you'
+  #Actions performed at the end of combat
+  on-stop:
+    - '[MESSAGE] &aCombat ended'
+  #Actions performed at the end of combat
+  on-item-cooldown:
+    - '[MESSAGE] Wait &6{0} &fbefore use &c{1}'
+  #Actions performed when the player quit / kick in combat
+  on-pvp-leave:
+    - '[BROADCASTMESSAGE] Player %luckperms_prefix% &f{0} quit in combat'
+  #Actions performed when the player perform command in combat
+  on-pvp-command:
+    - "[MESSAGE] &cYou can't use this command in combat"
+  on-interact-prevention:
+    - '[MESSAGE] &cYou cant use {0} in combat'
+  on-tick:
+    - '[ACTIONBAR] &cCombat &7| &fWait: &6{0}'
+  on-player-command:
+    - "[MESSAGE] You can't use command for {0} cause player is in combat"
+  on-join:
+    - "[MESSAGE] You joined combat with {0}"
+  on-merge: []
+  on-cooldown-expired:
+    - "[TITLE] &r;&fCooldown for {0} was expired"
+  on-held:
+    - "[TITLE] &r;&f{0} cooldown expires in {1}"
+# Don't change it !!!
+config-version: 2

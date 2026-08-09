@@ -1,0 +1,52 @@
+package dev.enco.greatcombat.api.events;
+
+import dev.enco.greatcombat.api.models.IUser;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Event calls when two players who are already in combat with each other continue fighting.
+ * This event refreshes the combat timer but doesn't change the combat state.
+ *
+ * @see CombatDamageEvent
+ */
+public class CombatContinueEvent extends CombatDamageEvent {
+    private static final HandlerList handlers = new HandlerList();
+
+    /**
+     * Constructs a new CombatContinueEvent without specific damage cause.
+     *
+     * @param damager User who dealt damage
+     * @param target User who received damage
+     */
+    public CombatContinueEvent(@NotNull IUser damager,
+                               @NotNull IUser target
+    ) {
+        super(damager, target);
+    }
+
+    /**
+     * Constructs a new CombatContinueEvent with specific damage cause.
+     *
+     * @param damager User who dealt damage
+     * @param target User who received damage
+     * @param cause Specific cause of damage
+     */
+    public CombatContinueEvent(@NotNull IUser damager,
+                               @NotNull IUser target,
+                               @Nullable EntityDamageEvent.DamageCause cause
+    ) {
+        super(damager, target, cause);
+    }
+
+    public static @NotNull HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+}

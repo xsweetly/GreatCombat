@@ -1,0 +1,37 @@
+package dev.enco.greatcombat.core.scoreboard.impl;
+
+import com.xism4.sternalboard.SternalBoardHandler;
+import dev.enco.greatcombat.api.models.IUser;
+import dev.enco.greatcombat.api.models.ScoreboardProvider;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.UUID;
+
+public class SternalBoardProvider implements ScoreboardProvider {
+    private final Reference2ObjectMap<UUID, SternalBoardHandler> handlers = new Reference2ObjectOpenHashMap<>();
+
+    @Override
+    public void setScoreboard(@NotNull IUser user, @NotNull String title, @NotNull List<String> lines) {
+        var uuid = user.getPlayerUUID();
+        SternalBoardHandler handler = handlers.get(uuid);
+        if (handler == null) {
+            handler = new SternalBoardHandler(user.asPlayer());
+            handlers.put(uuid, handler);
+        }
+        handler.updateTitle(title);
+        handler.updateLines(lines);
+    }
+
+    @Override
+    public void resetScoreboard(@NotNull IUser user) {
+        var uuid = user.getPlayerUUID();
+        var handler = handlers.get(uuid);
+        if (handler != null) {
+            handler.delete();
+            handlers.remove(uuid);
+        }
+    }
+}
